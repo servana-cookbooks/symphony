@@ -44,14 +44,6 @@ node["sites"].each do |site|
           mode "0644"
          # action :create_if_missing
         end
-
-    else
-
-      remote_file "#{Chef::Config[:file_cache_path]}/symphony-#{node['symphony']['branch']}.tar.gz" do
-        source "http://wordpress.org/wordpress-#{node['symphony']['branch']}.tar.gz"
-        mode "0644"
-      end
-
     end
 
     directory "#{site_dir}" do
@@ -66,12 +58,13 @@ node["sites"].each do |site|
       cwd site_dir
       command "unzip #{local_file}"
       creates "#{site_dir}/symphony-2-master/index.php"
+      only_if do ! File.exists?("#{site_dir}/index.php") end
     end
 
     execute "move symphony files"
       cwd "#{site_dir}"
       command "mv symphony-2-master/* ."
-      only_if do File.exists?("#{site_dir}/symphony-2-master") end
+      only_if do File.exists?("#{site_dir}/symphony-2-master/index.php") end
     end
 
     execute "remove symfony-2-master directory"
