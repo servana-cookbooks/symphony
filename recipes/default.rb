@@ -65,7 +65,25 @@ node["sites"].each do |site|
     execute "unzip-symphony" do
       cwd site_dir
       command "unzip #{local_file}"
-      creates "#{site_dir}/index.php"
+      creates "#{site_dir}/symphony-2-master/index.php"
+    end
+
+    execute "move symphony files"
+      cwd "#{site_dir}"
+      command "mv symphony-2-master/* ."
+      only_if do File.exists?("#{site_dir}/symphony-2-master") end
+    end
+
+    execute "remove symfony-2-master directory"
+      cwd "#{site_dir}"
+      command "rm -rf symphony-2-master"
+      only_if do File.exists?("#{site_dir}/symphony-2-master") end
+    end
+
+    execute "give the webserver ownership over this directory"
+      cwd "#{site_dir}"
+      command "chown -R www-data:www-data #{site_dir}"
+      only_if do File.exists?("#{site_dir}") end
     end
 
     log "Navigate to 'http://#{site_fqdn}/install/' to complete symphony installation" do
