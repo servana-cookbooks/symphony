@@ -61,19 +61,19 @@ node["sites"].each do |site|
       only_if do ! File.exists?("#{site_dir}/index.php") end
     end
 
-    execute "move symphony files"
+    execute "move symphony files" do
       cwd "#{site_dir}"
       command "mv symphony-2-master/* ."
       only_if do File.exists?("#{site_dir}/symphony-2-master/index.php") end
     end
 
-    execute "remove symfony-2-master directory"
+    execute "remove symfony-2-master directory" do
       cwd "#{site_dir}"
       command "rm -rf symphony-2-master"
       only_if do File.exists?("#{site_dir}/symphony-2-master") end
     end
 
-    execute "give the webserver ownership over this directory"
+    execute "give the webserver ownership over this directory" do
       cwd "#{site_dir}"
       command "chown -R www-data:www-data #{site_dir}"
       only_if do File.exists?("#{site_dir}") end
