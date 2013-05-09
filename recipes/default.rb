@@ -55,7 +55,7 @@ node["sites"].each do |site|
     end
 
     execute "unzip-symphony" do
-      cwd site_dir
+      cwd "#{site_dir}"
       command "unzip #{local_file}"
       creates "#{site_dir}/symphony-2-master/index.php"
       only_if do ! File.exists?("#{site_dir}/index.php") end
